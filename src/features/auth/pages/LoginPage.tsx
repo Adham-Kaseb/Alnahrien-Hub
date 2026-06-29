@@ -54,7 +54,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-slate-950 p-4 overflow-hidden select-none font-sans">
+    <div className="min-h-screen relative flex items-center justify-center bg-slate-950 p-4 overflow-hidden select-none">
       {/* Animated Glowing Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <motion.div

@@ -335,7 +335,7 @@ export function AttendancePage() {
             <DataTable
               columns={columns as any}
               data={filteredLogs}
-              loading={loading}
+              isLoading={loading}
               emptyMessage="لم يقم أي موظف بتسجيل الحضور بعد 📅"
             />
           </Card>
