@@ -82,11 +82,11 @@ function AssetManagementPage() {
     }
 
     if (editingAsset) {
-      const { error } = await supabase.from('assets').update(form).eq('id', editingAsset.id);
+      const { error } = await (supabase.from('assets') as any).update(form).eq('id', editingAsset.id);
       if (error) toast.error('حصل مشكلة في التعديل');
       else toast.success('تم التعديل بنجاح ✅');
     } else {
-      const { error } = await supabase.from('assets').insert(form);
+      const { error } = await (supabase.from('assets') as any).insert(form);
       if (error) toast.error('حصل مشكلة في الإضافة');
       else toast.success('تم إضافة الجهاز بنجاح ✅');
     }

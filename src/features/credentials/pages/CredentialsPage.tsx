@@ -61,7 +61,7 @@ function CredentialsPage() {
   const handleSave = async () => {
     if (!form.service_name.trim()) { toast.error('اكتب اسم الخدمة'); return; }
 
-    const { error } = await supabase.from('credentials').insert({
+    const { error } = await (supabase.from('credentials') as any).insert({
       credential_type: modalType,
       service_name: form.service_name,
       payment_method: modalType === 'billing' ? form.payment_method : null,

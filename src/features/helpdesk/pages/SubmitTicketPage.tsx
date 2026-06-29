@@ -31,7 +31,7 @@ function SubmitTicketPage() {
   });
 
   const onSubmit = async (data: TicketForm) => {
-    const { error } = await supabase.from('tickets').insert({
+    const { error } = await (supabase.from('tickets') as any).insert({
       employee_name: data.employee_name,
       issue_description: data.issue_description,
       phone_number: data.phone_number,
@@ -97,7 +97,7 @@ function SubmitTicketPage() {
               المشكلة فين بالظبط؟ <span className="text-rose-500">*</span>
             </label>
             <textarea
-              className={`w-full min-h-[120px] px-4 py-3 rounded-xl border ${
+              className={`w-full min-h-30 px-4 py-3 rounded-xl border ${
                 errors.issue_description ? 'border-rose-400' : 'border-slate-200'
               } text-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition-all`}
               placeholder="مثال: اللابتوب مش بيفتح خالص من امبارح، وبيطلع شاشة زرقا"

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Card, CardHeader } from '@/components/ui/Card';
+
 import { DataTable, type Column } from '@/components/ui/Table';
 import { StatusBadge, statusConfig } from '@/components/ui/StatusBadge';
 import { formatDate, formatTicketNumber } from '@/lib/utils';
@@ -38,8 +38,7 @@ function ManageTicketsPage() {
   }, [fetchTickets]);
 
   const handleStatusChange = async (ticketId: string, newStatus: TicketStatus) => {
-    const { error } = await supabase
-      .from('tickets')
+    const { error } = await (supabase.from('tickets') as any)
       .update({ status: newStatus })
       .eq('id', ticketId);
 
