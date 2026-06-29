@@ -30,6 +30,9 @@ import { KnowledgeBasePage } from '@/features/knowledge/pages/KnowledgeBasePage'
 // Emergency
 import { EmergencyContactsPage } from '@/features/emergency/pages/EmergencyContactsPage';
 
+// Attendance
+import { AttendancePage } from '@/features/attendance/pages/AttendancePage';
+
 function App() {
   return (
     <BrowserRouter>
@@ -74,6 +77,7 @@ function App() {
             {/* Admin Only */}
             <Route element={<RoleGuard allowedRoles={['admin']} />}>
               <Route path="/helpdesk/manage" element={<ManageTicketsPage />} />
+              <Route path="/attendance" element={<AttendancePage />} />
               <Route path="/assets" element={<AssetManagementPage />} />
               <Route path="/credentials" element={<CredentialsPage />} />
               <Route path="/emergency" element={<EmergencyContactsPage />} />

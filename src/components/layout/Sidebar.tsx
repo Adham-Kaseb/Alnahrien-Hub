@@ -9,6 +9,7 @@ import {
   LogOut,
   Shield,
   X,
+  CalendarCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
@@ -29,6 +30,7 @@ const allNavItems: NavItem[] = [
   { to: '/', label: 'الرئيسية', icon: <Home size={20} /> },
   { to: '/helpdesk/submit', label: 'بلّغ عن مشكلة', icon: <TicketCheck size={20} /> },
   { to: '/helpdesk/manage', label: 'إدارة الدعم الفني', icon: <TicketCheck size={20} />, adminOnly: true },
+  { to: '/attendance', label: 'حضور الموظفين', icon: <CalendarCheck size={20} />, adminOnly: true },
   { to: '/assets', label: 'عهدة الأجهزة', icon: <Monitor size={20} />, adminOnly: true },
   { to: '/credentials', label: 'الاشتراكات والباسوردات', icon: <KeyRound size={20} />, adminOnly: true },
   { to: '/knowledge', label: 'الشروحات', icon: <BookOpen size={20} /> },

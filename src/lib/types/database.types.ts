@@ -169,6 +169,27 @@ export type Database = {
           account_notes?: string | null;
         };
       };
+      attendance: {
+        Row: {
+          id: string;
+          employee_id: string;
+          check_in_time: string;
+          status: 'on_time' | 'late';
+          notes: string | null;
+        };
+        Insert: {
+          employee_id: string;
+          check_in_time?: string;
+          status?: 'on_time' | 'late';
+          notes?: string | null;
+        };
+        Update: {
+          employee_id?: string;
+          check_in_time?: string;
+          status?: 'on_time' | 'late';
+          notes?: string | null;
+        };
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -213,3 +234,4 @@ export type AppRole = Database['public']['Enums']['app_role'];
 export type TicketStatus = Ticket['status'];
 export type DeviceType = Asset['device_type'];
 export type DeviceCondition = Asset['device_condition'];
+export type Attendance = Database['public']['Tables']['attendance']['Row'];

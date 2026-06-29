@@ -58,6 +58,11 @@
     min-height: 100vh;
   }
 
+  .font-sans,
+  [class*="font-sans"] {
+    font-family: "Tajawal", "Inter", system-ui, -apple-system, sans-serif !important;
+  }
+
   /* Scrollbar Styling */
   ::-webkit-scrollbar {
     width: 6px;
