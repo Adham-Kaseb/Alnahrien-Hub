@@ -11,6 +11,8 @@ export type Database = {
           full_name: string;
           role: 'admin' | 'employee';
           phone: string | null;
+          email: string | null;
+          password: string | null;
           created_at: string;
         };
         Insert: {
@@ -18,11 +20,15 @@ export type Database = {
           full_name: string;
           role?: 'admin' | 'employee';
           phone?: string | null;
+          email?: string | null;
+          password?: string | null;
         };
         Update: {
           full_name?: string;
           role?: 'admin' | 'employee';
           phone?: string | null;
+          email?: string | null;
+          password?: string | null;
         };
       };
       tickets: {
@@ -174,6 +180,13 @@ export type Database = {
           total_guides: number;
           pending_renewals: number;
         };
+      };
+      login_user: {
+        Args: {
+          p_email: string;
+          p_password: string;
+        };
+        Returns: Database['public']['Tables']['profiles']['Row'][];
       };
     };
     Enums: {

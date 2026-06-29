@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
-import { supabase } from '@/lib/supabase';
+
 
 interface NavItem {
   to: string;
@@ -31,15 +31,15 @@ const allNavItems: NavItem[] = [
 ];
 
 function Sidebar() {
-  const { profile, isAdmin } = useAuthStore();
+  const { profile, isAdmin, reset } = useAuthStore();
   const navigate = useNavigate();
 
   const visibleItems = allNavItems.filter(
     (item) => !item.adminOnly || isAdmin()
   );
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    reset();
     navigate('/login');
   };
 

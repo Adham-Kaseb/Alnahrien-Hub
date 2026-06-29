@@ -18,30 +18,47 @@ interface AuthState {
   isAdmin: () => boolean;
 }
 
+const getStoredProfile = (): Profile | null => {
+  try {
+    const data = localStorage.getItem('alnahrien_profile');
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    return null;
+  }
+};
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   session: null,
-  profile: null,
-  role: null,
-  isLoading: true,
+  profile: getStoredProfile(),
+  role: getStoredProfile()?.role ?? null,
+  isLoading: false,
 
   setSession: (session) => set({ session }),
 
-  setProfile: (profile) =>
+  setProfile: (profile) => {
+    if (profile) {
+      localStorage.setItem('alnahrien_profile', JSON.stringify(profile));
+    } else {
+      localStorage.removeItem('alnahrien_profile');
+    }
     set({
       profile,
       role: profile?.role ?? null,
-    }),
+    });
+  },
 
   setLoading: (isLoading) => set({ isLoading }),
 
-  reset: () =>
+  reset: () => {
+    localStorage.removeItem('alnahrien_profile');
     set({
       session: null,
       profile: null,
       role: null,
       isLoading: false,
-    }),
+    });
+  },
 
-  isAuthenticated: () => get().session !== null,
+  isAuthenticated: () => get().profile !== null,
   isAdmin: () => get().role === 'admin',
 }));

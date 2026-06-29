@@ -11,7 +11,7 @@ import { useAuthStore } from '@/store/authStore';
 import type { Guide } from '@/lib/types/database.types';
 
 function KnowledgeBasePage() {
-  const { isAdmin, session } = useAuthStore();
+  const { isAdmin, profile } = useAuthStore();
   const [guides, setGuides] = useState<Guide[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -42,7 +42,7 @@ function KnowledgeBasePage() {
       media_type: form.media_type,
       target_problem: form.target_problem,
       content: form.content,
-      created_by: session?.user.id,
+      created_by: profile?.id,
     });
 
     if (error) toast.error('حصل مشكلة في الحفظ');

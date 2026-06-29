@@ -8,6 +8,8 @@ import toast from 'react-hot-toast';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/Button';
 
+import { useAuthStore } from '@/store/authStore';
+
 const loginSchema = z.object({
   email: z.string().email('الإيميل مش صحيح'),
   password: z.string().min(6, 'كلمة المرور لازم تكون 6 حروف على الأقل'),
@@ -28,15 +30,18 @@ function LoginPage() {
   });
 
   const onSubmit = async (data: LoginForm) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
+    const { data: profileData, error } = await supabase.rpc('login_user', {
+      p_email: data.email,
+      p_password: data.password,
     });
 
-    if (error) {
+    if (error || !profileData || (profileData as any).length === 0) {
       toast.error('الإيميل أو كلمة المرور غلط. جرب تاني.');
       return;
     }
+
+    // Set the user profile in store
+    useAuthStore.getState().setProfile((profileData as any)[0]);
 
     toast.success('تم تسجيل الدخول بنجاح! 🎉');
     navigate('/');

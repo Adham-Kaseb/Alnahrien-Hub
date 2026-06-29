@@ -18,7 +18,7 @@ const ticketSchema = z.object({
 type TicketForm = z.infer<typeof ticketSchema>;
 
 function SubmitTicketPage() {
-  const { session } = useAuthStore();
+  const { profile } = useAuthStore();
   const [submitted, setSubmitted] = useState(false);
 
   const {
@@ -35,7 +35,7 @@ function SubmitTicketPage() {
       employee_name: data.employee_name,
       issue_description: data.issue_description,
       phone_number: data.phone_number,
-      submitted_by: session?.user.id,
+      submitted_by: profile?.id,
     });
 
     if (error) {
