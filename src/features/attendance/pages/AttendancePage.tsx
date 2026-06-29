@@ -337,6 +337,7 @@ export function AttendancePage() {
               data={filteredLogs}
               isLoading={loading}
               emptyMessage="لم يقم أي موظف بتسجيل الحضور بعد 📅"
+              keyField="id"
             />
           </Card>
         </div>

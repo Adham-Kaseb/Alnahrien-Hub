@@ -31,7 +31,7 @@ function DashboardHome() {
     async function loadData() {
       try {
         if (isAdmin()) {
-          const statsRes = await supabase.rpc('get_dashboard_stats');
+          const statsRes = await (supabase.rpc('get_dashboard_stats') as any);
           if (statsRes.data) setStats(statsRes.data as unknown as DashboardStats);
 
           const ticketsRes = await supabase.from('tickets').select('*').order('created_at', { ascending: false }).limit(3);
