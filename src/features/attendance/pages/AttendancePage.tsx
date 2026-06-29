@@ -26,37 +26,55 @@ interface CommitmentStats {
 function AttendanceChart({ data }: { data: CommitmentStats[] }) {
   if (data.length === 0) {
     return (
-      <div className="text-slate-400 text-xs text-center py-12 font-medium">
-        لا توجد بيانات كافية لعرض الرسم البياني للحضور
+      <div className="text-slate-400 text-xs text-center py-12 font-semibold">
+        لا توجد بيانات حضور كافية حالياً لعرض المخطط البياني.
       </div>
     );
   }
 
-  const chartHeight = 160;
-  const barWidth = 36;
-  const gap = 28;
-  const paddingX = 40;
+  const chartHeight = 180;
+  const barWidth = 44;
+  const gap = 40;
+  const paddingX = 50;
   const paddingY = 30;
-  const chartWidth = Math.max(data.length * (barWidth + gap) + paddingX * 2, 320);
+  
+  // Ensure chart takes up full width comfortably
+  const chartWidth = Math.max(data.length * (barWidth + gap) + paddingX * 2, 480);
 
   return (
-    <div className="w-full overflow-x-auto pb-2 scrollbar-thin">
+    <div className="w-full overflow-x-auto pb-4 scrollbar-thin">
       <svg width={chartWidth} height={chartHeight + paddingY * 2} className="mx-auto select-none">
+        {/* SVG Gradients definitions */}
+        <defs>
+          <linearGradient id="emeraldGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#059669" />
+          </linearGradient>
+          <linearGradient id="amberGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#d97706" />
+          </linearGradient>
+          <linearGradient id="roseGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#f43f5e" />
+            <stop offset="100%" stopColor="#e11d48" />
+          </linearGradient>
+        </defs>
+
         {/* Y Axis Grid lines */}
         {[0, 25, 50, 75, 100].map((val) => {
           const y = chartHeight - (val / 100) * chartHeight + paddingY;
           return (
-            <g key={val} className="opacity-40">
+            <g key={val} className="opacity-75">
               <line x1={paddingX} y1={y} x2={chartWidth - paddingX} y2={y} stroke="#f1f5f9" strokeWidth="1" />
-              <text x={paddingX - 12} y={y + 4} textAnchor="end" className="text-[10px] font-extrabold fill-slate-400">{val}%</text>
+              <text x={paddingX - 16} y={y + 4} textAnchor="end" className="text-[10px] font-black fill-slate-400">{val}%</text>
             </g>
           );
         })}
 
         {/* Bars */}
         {data.map((item, idx) => {
-          const x = paddingX + idx * (barWidth + gap) + 12;
-          const barHeight = Math.max((item.rate / 100) * chartHeight, 6);
+          const x = paddingX + idx * (barWidth + gap) + 20;
+          const barHeight = Math.max((item.rate / 100) * chartHeight, 8);
           const y = chartHeight - barHeight + paddingY;
 
           // Color based on commitment rate
@@ -72,29 +90,13 @@ function AttendanceChart({ data }: { data: CommitmentStats[] }) {
 
           return (
             <g key={item.name} className="group cursor-pointer">
-              {/* SVG Gradients definitions */}
-              <defs>
-                <linearGradient id="emeraldGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#059669" />
-                </linearGradient>
-                <linearGradient id="amberGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#f59e0b" />
-                  <stop offset="100%" stopColor="#d97706" />
-                </linearGradient>
-                <linearGradient id="roseGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#f43f5e" />
-                  <stop offset="100%" stopColor="#e11d48" />
-                </linearGradient>
-              </defs>
-
-              {/* Hover Highlight Area */}
+              {/* Hover Highlight Pill */}
               <rect
-                x={x - 6}
+                x={x - 8}
                 y={paddingY - 10}
-                width={barWidth + 12}
+                width={barWidth + 16}
                 height={chartHeight + 20}
-                rx={12}
+                rx={14}
                 className="fill-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               />
 
@@ -105,38 +107,38 @@ function AttendanceChart({ data }: { data: CommitmentStats[] }) {
                 width={barWidth}
                 height={barHeight}
                 rx={8}
-                className={`${barBorder} stroke-1`}
+                className={`${barBorder} stroke-1 transition-all duration-300`}
                 fill={barFill}
               />
 
-              {/* Exact Percentage / Stats text on hover */}
+              {/* Rate percentage text */}
               <text
                 x={x + barWidth / 2}
                 y={y - 8}
                 textAnchor="middle"
-                className="text-[10px] font-black fill-slate-800 transition-all duration-200"
+                className="text-[11px] font-black fill-slate-800 transition-all duration-200"
               >
                 {Math.round(item.rate)}%
               </text>
 
-              {/* Small details text underneath */}
+              {/* Attendance ratio on hover */}
               <text
                 x={x + barWidth / 2}
-                y={y - 20}
+                y={y - 22}
                 textAnchor="middle"
-                className="text-[9px] font-semibold fill-slate-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                className="text-[9px] font-bold fill-slate-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               >
-                {item.onTime} من {item.total}
+                حضر {item.onTime} من {item.total}
               </text>
 
-              {/* X Axis Label (First name only) */}
+              {/* X Axis Label */}
               <text
                 x={x + barWidth / 2}
                 y={chartHeight + paddingY + 18}
                 textAnchor="middle"
-                className="text-[10px] font-bold fill-slate-500"
+                className="text-[11px] font-bold fill-slate-600"
               >
-                {item.name.split(' ')[0]}
+                {item.name}
               </text>
             </g>
           );
@@ -148,15 +150,17 @@ function AttendanceChart({ data }: { data: CommitmentStats[] }) {
 
 export function AttendancePage() {
   const [logs, setLogs] = useState<AttendanceLog[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [empSearchTerm, setEmpSearchTerm] = useState('');
 
   const fetchAttendanceData = async () => {
     setLoading(true);
     try {
       const [logsRes, profilesRes] = await Promise.all([
         supabase.from('attendance').select('*').order('check_in_time', { ascending: false }),
-        supabase.from('profiles').select('id, full_name, email')
+        supabase.from('profiles').select('id, full_name, email, role, phone')
       ]);
 
       if (logsRes.error) throw logsRes.error;
@@ -179,6 +183,23 @@ export function AttendancePage() {
       }));
 
       setLogs(mappedLogs);
+
+      // Map all registered profiles with their attendance statistics
+      const mappedEmployees = profilesData.map((p) => {
+        const pLogs = logsData.filter((log) => log.employee_id === p.id);
+        const total = pLogs.length;
+        const onTime = pLogs.filter((log) => log.status === 'on_time').length;
+        return {
+          id: p.id,
+          fullName: p.full_name,
+          email: p.email,
+          phone: p.phone || '-',
+          role: p.role === 'admin' ? 'مدير النظام' : 'موظف',
+          totalCheckIns: total,
+          commitmentRate: total > 0 ? Math.round((onTime / total) * 100) : null,
+        };
+      });
+      setEmployees(mappedEmployees);
     } catch (error) {
       toast.error('مقدرناش نحمل بيانات الحضور');
     } finally {
@@ -222,6 +243,12 @@ export function AttendancePage() {
     log.employeeEmail?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Filter registered employees for search
+  const filteredEmployees = employees.filter((emp) =>
+    emp.fullName?.toLowerCase().includes(empSearchTerm.toLowerCase()) ||
+    emp.email?.toLowerCase().includes(empSearchTerm.toLowerCase())
+  );
+
   const columns: Column<AttendanceLog>[] = [
     {
       key: 'employeeName',
@@ -261,116 +288,202 @@ export function AttendancePage() {
     },
   ];
 
+  const employeeColumns: Column<any>[] = [
+    {
+      key: 'fullName',
+      header: 'اسم الموظف',
+      render: (row) => <span className="font-bold text-slate-800 text-xs">{row.fullName}</span>,
+    },
+    {
+      key: 'email',
+      header: 'البريد الإلكتروني',
+      render: (row) => <span className="text-slate-600 text-xs font-mono">{row.email}</span>,
+    },
+    {
+      key: 'role',
+      header: 'الصلاحية',
+      render: (row) => (
+        <span className={`inline-flex px-2.5 py-0.5 rounded-md text-[10px] font-bold ${
+          row.role === 'مدير النظام' 
+            ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' 
+            : 'bg-slate-50 text-slate-600 border border-slate-100'
+        }`}>
+          {row.role}
+        </span>
+      ),
+    },
+    {
+      key: 'phone',
+      header: 'رقم الهاتف',
+      render: (row) => <span className="text-slate-500 text-xs font-mono">{row.phone}</span>,
+    },
+    {
+      key: 'totalCheckIns',
+      header: 'إجمالي الحضور',
+      render: (row) => <span className="text-slate-700 font-bold text-xs">{row.totalCheckIns} أيام</span>,
+    },
+    {
+      key: 'commitmentRate',
+      header: 'معدل الالتزام العام',
+      render: (row) => {
+        if (row.commitmentRate === null) {
+          return <span className="text-slate-400 text-xs font-bold">لا توجد سجلات 📅</span>;
+        }
+        
+        let color = 'text-emerald-600 bg-emerald-50 border-emerald-100';
+        if (row.commitmentRate < 75) color = 'text-rose-600 bg-rose-50 border-rose-100';
+        else if (row.commitmentRate < 90) color = 'text-amber-600 bg-amber-50 border-amber-100';
+        
+        return (
+          <span className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-black border ${color}`}>
+            {row.commitmentRate}%
+          </span>
+        );
+      }
+    }
+  ];
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-sans">
       {/* Title Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-600/10">
-            <CalendarCheck size={20} />
+          <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-600/10">
+            <CalendarCheck size={22} />
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-800">حضور وانصراف الموظفين</h1>
-            <p className="text-slate-400 text-xs">متابعة دقة مواعيد الموظفين وتحليل الالتزام بالعمل</p>
+          <div className="text-right">
+            <h1 className="text-xl font-bold text-slate-800">سجل حضور وانصراف الموظفين</h1>
+            <p className="text-slate-400 text-xs mt-1">متابعة دقة مواعيد الموظفين وتحليل الالتزام بالعمل اليومي</p>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/50 shadow-xs flex items-center justify-between">
-          <div className="space-y-1">
-            <span className="text-xs font-bold text-slate-400">إجمالي الحضور المسجل</span>
-            <h2 className="text-2xl font-black text-slate-800">{loading ? '...' : totalLogs}</h2>
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/50 shadow-xs flex items-center justify-between group">
+          <div className="space-y-1 text-right">
+            <span className="text-xs font-bold text-slate-400">إجمالي حضور الموظفين</span>
+            <h2 className="text-2xl font-black text-slate-800 tracking-tight mt-1">{loading ? '...' : totalLogs}</h2>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
             <Users size={22} />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/50 shadow-xs flex items-center justify-between">
-          <div className="space-y-1">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/50 shadow-xs flex items-center justify-between group">
+          <div className="space-y-1 text-right">
             <span className="text-xs font-bold text-slate-400">معدل الانضباط والالتزام</span>
-            <h2 className="text-2xl font-black text-emerald-600">
+            <h2 className="text-2xl font-black text-emerald-600 tracking-tight mt-1">
               {loading ? '...' : `${Math.round(commitmentRate)}%`}
             </h2>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
             <CheckCircle2 size={22} />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/50 shadow-xs flex items-center justify-between">
-          <div className="space-y-1">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/50 shadow-xs flex items-center justify-between group">
+          <div className="space-y-1 text-right">
             <span className="text-xs font-bold text-slate-400">إجمالي حالات التأخير</span>
-            <h2 className="text-2xl font-black text-rose-600">{loading ? '...' : lateCount}</h2>
+            <h2 className="text-2xl font-black text-rose-600 tracking-tight mt-1">{loading ? '...' : lateCount}</h2>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:bg-rose-100 transition-colors">
             <AlertTriangle size={22} />
           </div>
         </div>
       </div>
 
-      {/* Chart and Table container */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Logs Table (Col Span 2) */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
-            <h2 className="text-sm font-bold text-slate-800">سجل تسجيل الحضور المباشر</h2>
-
-            {/* Search Input */}
-            <div className="relative w-full sm:w-64">
-              <Search size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder="ابحث باسم الموظف..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full h-9 pr-10 pl-4 rounded-xl border border-slate-200/80 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-indigo-500 transition-colors"
-              />
+      {/* Analytics Chart (Spacious Full Width Card) */}
+      <Card className="p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-6">
+          <div className="text-right">
+            <h3 className="text-base font-extrabold text-slate-800">تحليل نسب انضباط حضور الموظفين</h3>
+            <p className="text-slate-400 text-xs mt-0.5">معدل وصول الموظف في الموعد المحدد (قبل الساعة 9:00 صباحاً)</p>
+          </div>
+          
+          {/* Legend */}
+          <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-500">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+              <span>ملتزم بالكامل (90%+)</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+              <span>انضباط متوسط (75% - 89%)</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+              <span>غير ملتزم (أقل من 75%)</span>
             </div>
           </div>
+        </div>
 
-          <Card className="p-4 md:p-6">
-            <DataTable
-              columns={columns as any}
-              data={filteredLogs}
-              isLoading={loading}
-              emptyMessage="لم يقم أي موظف بتسجيل الحضور بعد 📅"
-              keyField="id"
+        {loading ? (
+          <div className="h-44 w-full bg-slate-50 animate-pulse rounded-2xl" />
+        ) : (
+          <AttendanceChart data={chartData} />
+        )}
+      </Card>
+
+      {/* Logs Table (Spacious Full Width Card) */}
+      <Card className="p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-6">
+          <div className="text-right">
+            <h3 className="text-base font-extrabold text-slate-800">سجل تسجيل الحضور المباشر</h3>
+            <p className="text-slate-400 text-xs mt-0.5">قائمة كاملة توضح تواريخ وتوقيتات حضور كافة الموظفين بالتفصيل</p>
+          </div>
+
+          {/* Integrated Search Input */}
+          <div className="relative w-full sm:w-72">
+            <Search size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="ابحث باسم الموظف أو البريد..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-10 pr-10 pl-4 rounded-xl border border-slate-200/80 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all"
             />
-          </Card>
+          </div>
         </div>
 
-        {/* Right Column: Chart (Col Span 1) */}
-        <div className="space-y-4">
-          <h2 className="text-sm font-bold text-slate-800 px-1">معدل التزام الموظفين (إحصائيات)</h2>
-          <Card className="p-5 md:p-6 flex flex-col items-center justify-center">
-            <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-md uppercase mb-4 self-start">
-              نسبة الحضور في الموعد (قبل 9:00 ص)
-            </span>
-            {loading ? (
-              <div className="h-40 w-full bg-slate-50 animate-pulse rounded-2xl" />
-            ) : (
-              <AttendanceChart data={chartData} />
-            )}
-            <div className="w-full border-t border-slate-100 mt-6 pt-4 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
-                <span>ملتزم بالكامل (90%+)</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
-                <span>انضباط متوسط (75% - 89%)</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" />
-                <span>يحتاج لمراجعة (أقل من 75%)</span>
-              </div>
-            </div>
-          </Card>
+        <DataTable
+          columns={columns as any}
+          data={filteredLogs}
+          isLoading={loading}
+          emptyMessage="لم يقم أي موظف بتسجيل الحضور بعد 📅"
+          keyField="id"
+        />
+      </Card>
+
+      {/* Registered Employees Table (Spacious Full Width Card) */}
+      <Card className="p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-6">
+          <div className="text-right">
+            <h3 className="text-base font-extrabold text-slate-800">قائمة كافة الموظفين المسجلين</h3>
+            <p className="text-slate-400 text-xs mt-0.5 font-medium">عرض الموظفين المسجلين في النظام وإحصائيات الحضور والالتزام الخاصة بكل منهم</p>
+          </div>
+
+          {/* Integrated Employee Search Input */}
+          <div className="relative w-full sm:w-72">
+            <Search size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="ابحث باسم الموظف أو البريد..."
+              value={empSearchTerm}
+              onChange={(e) => setEmpSearchTerm(e.target.value)}
+              className="w-full h-10 pr-10 pl-4 rounded-xl border border-slate-200/80 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+            />
+          </div>
         </div>
-      </div>
+
+        <DataTable
+          columns={employeeColumns as any}
+          data={filteredEmployees}
+          isLoading={loading}
+          emptyMessage="لا يوجد موظفون مسجلون حالياً في النظام 📅"
+          keyField="id"
+        />
+      </Card>
     </div>
   );
 }
