@@ -38,14 +38,14 @@ interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 function CardHeader({ title, description, action, className, ...props }: CardHeaderProps) {
   return (
-    <div className={cn('flex items-center justify-between mb-6', className)} {...props}>
+    <div className={cn('flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6', className)} {...props}>
       <div>
         <h2 className="text-lg font-bold text-slate-900">{title}</h2>
         {description && (
           <p className="text-sm text-slate-500 mt-0.5">{description}</p>
         )}
       </div>
-      {action && <div>{action}</div>}
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }

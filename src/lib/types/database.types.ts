@@ -186,7 +186,14 @@ export type Database = {
           p_email: string;
           p_password: string;
         };
-        Returns: Database['public']['Tables']['profiles']['Row'][];
+        Returns: {
+          id: string;
+          full_name: string;
+          role: 'admin' | 'employee';
+          phone: string | null;
+          email: string | null;
+          created_at: string;
+        }[];
       };
     };
     Enums: {

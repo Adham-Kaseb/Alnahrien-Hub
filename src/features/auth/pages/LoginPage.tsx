@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Lock, Eye, EyeOff, Shield } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/Button';
@@ -20,6 +21,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 function LoginPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
 
   const {
     register,
@@ -30,7 +32,7 @@ function LoginPage() {
   });
 
   const onSubmit = async (data: LoginForm) => {
-    const { data: profileData, error } = await supabase.rpc('login_user', {
+    const { data: profileData, error } = await (supabase.rpc as any)('login_user', {
       p_email: data.email,
       p_password: data.password,
     });
@@ -40,8 +42,14 @@ function LoginPage() {
       return;
     }
 
+    // Trigger entering animation
+    setIsEntering(true);
+
     // Set the user profile in store
     useAuthStore.getState().setProfile((profileData as any)[0]);
+
+    // Hold the screen for 1.5 seconds for a premium feel
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast.success('تم تسجيل الدخول بنجاح! 🎉');
     navigate('/');
@@ -113,6 +121,51 @@ function LoginPage() {
           دخول
         </Button>
       </form>
+
+      <AnimatePresence>
+        {isEntering && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/90 backdrop-blur-md text-white"
+          >
+            {/* Spinning & Pulsing Logo */}
+            <motion.div
+              animate={{
+                scale: [1, 1.1, 1],
+                rotate: [0, 360],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="w-20 h-20 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-2xl shadow-indigo-500/30 mb-6 border border-indigo-400/20"
+            >
+              <Shield size={38} className="text-white" />
+            </motion.div>
+
+            {/* Glowing Text */}
+            <motion.h3
+              initial={{ y: 15, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg font-bold text-slate-100 font-sans"
+            >
+              جاري تهيئة البوابة...
+            </motion.h3>
+            <motion.p
+              initial={{ y: 15, opacity: 0 }}
+              animate={{ y: 0, opacity: 0.6 }}
+              transition={{ delay: 0.4 }}
+              className="text-sm text-slate-400 mt-2 font-sans"
+            >
+              أهلاً بك في Alnahrien Hub
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
