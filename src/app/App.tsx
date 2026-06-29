@@ -3,7 +3,6 @@ import { Toaster } from 'react-hot-toast';
 
 // Layouts
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { AuthLayout } from '@/components/layout/AuthLayout';
 
 // Guards
 import { AuthGuard } from '@/guards/AuthGuard';
@@ -39,7 +38,7 @@ function App() {
         toastOptions={{
           duration: 4000,
           style: {
-            fontFamily: 'IBM Plex Sans Arabic, Inter, system-ui',
+            fontFamily: 'Tajawal, Inter, system-ui',
             direction: 'rtl',
             borderRadius: '1rem',
             padding: '12px 20px',
@@ -62,9 +61,7 @@ function App() {
 
       <Routes>
         {/* Auth Routes */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<LoginPage />} />
-        </Route>
+        <Route path="/login" element={<LoginPage />} />
 
         {/* Protected Routes */}
         <Route element={<AuthGuard />}>
